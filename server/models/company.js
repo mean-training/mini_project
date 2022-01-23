@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Company.hasMany(models.Employee,{foreignKey:'company_id', as:'employees'});
-      Company.belongsTo(models.Employee,{foreignKey:'owner_id',as:'employees'});
+      Company.belongsTo(models.Employee,{foreignKey:'owner_id', as:'owner'});
       Company.hasMany(models.Task,{foreignKey:'task_id',as:'tasks'});
     }
   }
@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     underscored:true,
     paranoid: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
     sequelize,
     modelName: 'Company',

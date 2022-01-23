@@ -22,7 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     underscored:true,
     timestamps:true,
     paranoid:true,
-    deletedAt:'deleted_at',
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
     sequelize,
     modelName: 'EmployeeProject',
   });

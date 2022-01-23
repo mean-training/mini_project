@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Task.init({
     title: DataTypes.STRING,
-    priority: DataTypes.STRING,
+    priority: DataTypes.ENUM('high','low','medium'),
     project_id: DataTypes.INTEGER,
     company_id: DataTypes.INTEGER,
     created_by: DataTypes.INTEGER,
@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     underscored:true,
     paranoid: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
     sequelize,
     modelName: 'Task',
