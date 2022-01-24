@@ -3,7 +3,7 @@ var path         = require('path');
 var cookieParser = require('cookie-parser');
 var logger       = require('morgan');
 var dotenv       = require('dotenv');
-var companyRoutes = require('./server/routes/companyRoutes');
+var authRoutes   = require('./server/routes/auth');
 
 var app = express();
 
@@ -14,7 +14,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 dotenv.config();
 
-app.use('/api/v1/',companyRoutes);
+app.use('/api/v1/', authRoutes);
 
 app.get('*', (req, res) => res.status(400).end('Sorry, not found'));
 

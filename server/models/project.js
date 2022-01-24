@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     sequelize,
     modelName: 'Project',
+    tableName:'Projects'
   });
   return Project;
 };

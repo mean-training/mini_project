@@ -1,17 +1,24 @@
 var nodemailer = require('nodemailer');
-require('dotenv').config(); 
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
+    service: 'gmail',
     auth: {
         user: process.env.MAILER_NAME,
         pass: process.env.MAILER_PASSWORD
     }
 });
 
-async function sendEmail({ from, to, subject, html }) {
-    await transporter.sendMail({ from, to, subject, html });
+module.exports = {
+    async  sendEmail({from, to, subject, html}) {
+        await transporter.sendMail({ from, to, subject, html }, function(error,response){
+            if(error){
+                console.log(error);
+                return;
+            }else{
+                console.log("response");
+                console.log('Email sent successfully');
+                transporter.close();
+            }
+        });
+    }
 }
-
-module.exports = sendEmail;

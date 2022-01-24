@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
   class Employee extends Model {
     /**
@@ -11,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Employee.belongsTo(models.Company,{foreignKey:'company_id',as:'companies'});
-      Employee.hasOne(models.Company,{foreignKey:'owner_id', as: 'company'});
       Employee.belongsToMany(models.Task,{through:'EmployeeTask',foreignKey:'employee_id', as :'tasks'});
       Employee.belongsToMany(models.Project,{through:'EmployeeProject',foreignKey:"employee_id",as:'projects'});
     }
@@ -28,12 +28,19 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'employee'
     }
   }, {
+    hooks:{
+      beforeCreate: (user) => {
+        const salt = bcrypt.genSaltSync();
+        user.password = bcrypt.hashSync(user.password, salt);
+      }
+    },
     timestamps: true,
     underscored:true,
     paranoid: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
+    tableName: 'Employees',
     sequelize,
     modelName: 'Employee',
   });

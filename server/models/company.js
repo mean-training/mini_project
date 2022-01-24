@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Company.hasMany(models.Employee,{foreignKey:'company_id', as:'employees'});
-      Company.belongsTo(models.Employee,{foreignKey:'owner_id', as:'owner'});
       Company.hasMany(models.Task,{foreignKey:'task_id',as:'tasks'});
     }
   }
@@ -20,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     domain: DataTypes.STRING,
     is_active: DataTypes.BOOLEAN,
     timezone: DataTypes.STRING,
-    owner_id: DataTypes.INTEGER
+    owner_id: DataTypes.INTEGER,
+    token:DataTypes.STRING
   },
   {
     timestamps: true,
@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     sequelize,
     modelName: 'Company',
+    tableName: 'Companies'
   });
   return Company;
 };
