@@ -23,7 +23,7 @@ module.exports = {
                 defaults:object
             }).then(async (employee) => {
                 if(!employee) return res.status(404).send({error:true,message:"Employee not found"});
-                await Company.update({owner_id:employee[0].dataValues.id},{
+                await Company.update({owner_id:employee[0].dataValues.id,is_active:true},{
                     where:{token: req.params.token}
                 }).then(() => {
                     return res.status(201).send({error:false, message: "User registered successfully" });
@@ -42,7 +42,7 @@ module.exports = {
         let requestData = req.body;
         await Employee.findOne({
             where:{email: requestData.email}
-        }).then(employee => {
+        }).then(async (employee) => {
             if(!employee){
                 return res.status(400).send({error:true,message:"Employee not found"})
             }
@@ -58,6 +58,10 @@ module.exports = {
                 expiresIn: 86400 // 24 hours
             });
 
+            await Employee.update({access_token:accessToken},{
+                where:{email:requestData.email}
+            });
+
             res.status(200).send({
                 error:false,
                 message:"User logged in successfully",
@@ -69,9 +73,10 @@ module.exports = {
                     accessToken: accessToken
                 }
             });
-        }).catch(err => {
-            return res.status(500).send({error:true,message:err.message});
         })
+        // .catch(err => {
+        //     return res.status(500).send({error:true,message:err.message});
+        // })
         
     }
 }

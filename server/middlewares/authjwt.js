@@ -1,9 +1,11 @@
 const jwt = require("jsonwebtoken");
+const { token } = require("morgan");
 const Employee = require('../models').Employee;
 require('dotenv').config()
 
 verifyToken = (req, res, next) => {
-  let token = req.headers["x-access-token"] || req.body.token  ;
+
+  let token = req.headers["x-access-token"] || req.body.token  || req.headers.authorization.split('Bearer ')[1];
 
   if (!token) {
     return res.status(403).send({
@@ -22,14 +24,16 @@ verifyToken = (req, res, next) => {
   });
 };
 
-isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
-      if(user.user_tpe == 'admin'){
-          next();
-          return;
+isAdmin = async (req, res, next) => {
+    let accessToken = req.headers["x-access-token"] || req.body.token  || req.headers.authorization.split('Bearer ')[1];
+    await Employee.findOne({
+        where:{access_token:accessToken}
+    }).then(employee => {
+        if(employee.dataValues.user_type == 'admin'){
+            next();
+            return;
         }
-        res.status(403).send({message: "You aren't authenticate to perform this action"});
-        return;
+        return res.status(403).send({message: "You aren't authenticate to perform this action"});
     });
 };
 

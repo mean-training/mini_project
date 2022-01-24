@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     company_id: DataTypes.INTEGER,
     is_active: DataTypes.BOOLEAN,
+    access_token:DataTypes.TEXT,
     user_type:{
       type: DataTypes.ENUM('admin','employee'),
       defaultValue: 'employee'

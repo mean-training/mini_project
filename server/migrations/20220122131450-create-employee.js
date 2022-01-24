@@ -61,6 +61,9 @@ module.exports = {
           isDate:true
         }
       },
+      access_token:{
+        type:Sequelize.STRING,
+      },
       user_type:{
         type: Sequelize.ENUM,
         values: ['admin','employee'],
