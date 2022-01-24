@@ -5,6 +5,7 @@ var logger       = require('morgan');
 var dotenv       = require('dotenv');
 var authRoutes   = require('./server/routes/auth');
 var companyRoutes = require('./server/routes/company');
+var projectRoutes = require('./server/routes/project');
 
 var app = express();
 
@@ -17,6 +18,7 @@ dotenv.config();
 
 app.use('/api/v1/', authRoutes);
 app.use('/api/v1/company', companyRoutes);
+app.use('/api/v1/project', projectRoutes);
 
 app.get('*', (req, res) => res.status(400).end('Sorry, not found'));
 
