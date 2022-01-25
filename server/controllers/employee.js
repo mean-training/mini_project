@@ -1,5 +1,6 @@
 const Company  = require('../models').Company;
 const Employee = require('../models').Employee;
+const crypto   = require('crypto');
 const jwt = require("jsonwebtoken");
 const bcrypt   = require('bcrypt');
 module.exports = {
@@ -73,10 +74,40 @@ module.exports = {
                     accessToken: accessToken
                 }
             });
-        })
-        // .catch(err => {
-        //     return res.status(500).send({error:true,message:err.message});
-        // })
+        }).catch(err => {
+            return res.status(500).send({error:true,message:err.message});
+        }) 
+    },
+
+    async inviteMember(req,res){
+        let object      = [];
         
+        let existingOne = [];
+        await Employee.findAll({
+            where:{email:req.body.email}
+        }).then(async (employee) => {
+            if(Object.entries(employee).length != 0){
+                employee.filter((value) => {
+                    if(req.body.email.includes(value.email)){
+                        existingOne.push(value.email)
+                    }
+                });
+            }
+            
+            if(existingOne.length != 0){
+                return res.status(409).send({error:true,message: `${existingOne.toString()} email(s) already exists.`})
+            }
+
+            req.body.email.map(value => {
+                let empObj = {email:value, company_id: req.employee.company_id, api_token: crypto.randomBytes(30).toString('hex')}
+                object.push(empObj);
+            })
+
+            await Employee.bulkCreate(object)
+            .then(() =>  res.status(200).send({error:false,message:"An invitation email has been sent to the members"}))
+            .catch((err) => {
+                return res.status(500).send({error:true, message: err.message});
+            });
+        });
     }
 }

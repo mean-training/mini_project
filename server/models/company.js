@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Company.hasMany(models.Employee,{foreignKey:'company_id', as:'employees'});
       Company.hasMany(models.Task,{foreignKey:'task_id',as:'tasks'});
+      Company.hasMany(models.Project,{foreignKey:'company_id',as:'projects'});
     }
   }
   Company.init({

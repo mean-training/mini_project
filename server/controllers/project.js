@@ -3,53 +3,62 @@ const Company = require('../models').Company;
 
 module.exports = {
 
-    async list(req,res){
-        return await Project.findAll({
-            include:[{
-                model:Company,
-                as:'companies'
-             }]
+    async create(req,res){
+        return await Project.findOrCreate({
+            where: { project_name: req.body.name, company_id: req.employee.company_id},
+            defaults: {project_name:req.body.name}
         }).then((project) => {
+            console.log(project[0])
+            res.status(201).send({error:false,message:"Project created successfully",data:project[0]});
+        }).catch((err) => {
+            console.log(err)
+            res.status(401).send({error:true,message:err.message});
+        })
+    },
+
+    async list(req,res){
+        return await Project.findAll()
+        .then((project) => {
              if(!project) res.status(400).send({error:true,message:"No project found"});
              res.status(200).send({error:false,message:"Projects found successfully",data:project});
-         }).catch((err) => {
+        }).catch((err) => {
              res.status(500).send({error:true,message:err.message})
-         });
-     },
+        });
+    },
+    
+    async retrieve(req,res){
+        return await Project.findOne({
+            where:{id:req.params.projectId},
+            include:[{
+                model:Company,
+                as:'company'
+            }]
+        }).then((project) => {
+            if(!project) res.status(400).send({error:true,message:"No project found"});
+            res.status(200).send({error:false,message:"Project details found successfully",data:project});
+        }).catch((err) => {
+            res.status(500).send({error:true,message:err.message})
+        });
+    },
  
-     async retrieve(req,res){
-         return await Project.findOne({
-             where:{id:req.params.projectId},
-             include:[{
-                 model:Company,
-                 as:'companies'
-              }]
-         }).then((project) => {
-              if(!project) res.status(400).send({error:true,message:"No project found"});
-              res.status(200).send({error:false,message:"Project details found successfully",data:project});
-          }).catch((err) => {
-              res.status(500).send({error:true,message:err.message})
-          });
-     },
+    async update(req,res){
+        let object = {};
+        let requestData = req.body;
  
-     async update(req,res){
-         let object = {};
-         let requestData = req.body;
- 
-         if(requestData.project_name) object.name = requestData.project_name
+        if(requestData.name) object.project_name = requestData.name
 
-         return await project.update(object,{
-             where: {id:req.params.projectId}
-         })
-         .then(() => res.status(200).send({error:false,message:"Project details updated successfully"}))
-         .catch((err) => res.status(500).send({error:false,message:err.message}));
-     },
- 
-     async delete(req,res){
-         return await Project.destroy({
-             where: {id:req.params.projectId}
-         })
-         .then(() => res.status(200).send({error:false,message:"Project deleted successfully"}))
-         .catch((err) => res.status(500).send({error:false,message:err.message}));
-     },
+        return await Project.update(object,{
+            where: {id:req.params.projectId}
+        })
+        .then(() => res.status(200).send({error:false,message:"Project details updated successfully"}))
+        .catch((err) => res.status(500).send({error:false,message:err.message}));
+    },
+     
+    async delete(req,res){
+        return await Project.destroy({
+            where: {id:req.params.projectId}
+        })
+        .then(() => res.status(200).send({error:false,message:"Project deleted successfully"}))
+        .catch((err) => res.status(500).send({error:false,message:err.message}));
+    },
 }

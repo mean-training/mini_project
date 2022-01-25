@@ -10,7 +10,6 @@ module.exports = {
       },
       first_name: {
         type: Sequelize.STRING,
-        allowNull:false,
         validate:{
           len : [2,25],
           isAlphanumeric:true,
@@ -21,7 +20,6 @@ module.exports = {
       },
       last_name: {
         type: Sequelize.STRING,
-        allowNull:false,
         validate:{
           len : [2,25],
           isAlphanumeric: true,
@@ -40,7 +38,6 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
-        allowNull:false,
         validate:{
           len:[8,10],
           is: /^[a-z0-9]+$/i
@@ -55,7 +52,6 @@ module.exports = {
         defaultValue: false 
       },
       deleted_at: {
-        allowNull: false,
         type: Sequelize.DATE,
         validate:{
           isDate:true

@@ -1,3 +1,4 @@
+const { decode } = require("jsonwebtoken");
 const jwt = require("jsonwebtoken");
 const { token } = require("morgan");
 const Employee = require('../models').Employee;
@@ -5,7 +6,7 @@ require('dotenv').config()
 
 verifyToken = (req, res, next) => {
 
-  let token = req.headers["x-access-token"] || req.body.token  || req.headers.authorization.split('Bearer ')[1];
+  let token = req.headers["x-access-token"] || req.body.token  || (req.headers.authorization ? req.headers.authorization.split('Bearer ')[1] : null);
 
   if (!token) {
     return res.status(403).send({
@@ -25,11 +26,12 @@ verifyToken = (req, res, next) => {
 };
 
 isAdmin = async (req, res, next) => {
-    let accessToken = req.headers["x-access-token"] || req.body.token  || req.headers.authorization.split('Bearer ')[1];
+    let accessToken = req.headers["x-access-token"] || req.body.token  || (req.headers.authorization ? req.headers.authorization.split('Bearer ')[1] : null);
     await Employee.findOne({
         where:{access_token:accessToken}
     }).then(employee => {
         if(employee.dataValues.user_type == 'admin'){
+            req.employee = employee;
             next();
             return;
         }
