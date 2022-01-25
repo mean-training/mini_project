@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Employee.belongsTo(models.Company,{foreignKey:'company_id',as:'companies'});
+      Employee.belongsTo(models.Company,{foreignKey:'company_id',as:'company'});
       Employee.belongsToMany(models.Task,{through:'EmployeeTask',foreignKey:'employee_id', as :'tasks'});
       Employee.belongsToMany(models.Project,{through:'EmployeeProject',foreignKey:"employee_id",as:'projects'});
     }
@@ -27,10 +27,16 @@ module.exports = (sequelize, DataTypes) => {
     user_type:{
       type: DataTypes.ENUM('admin','employee'),
       defaultValue: 'employee'
-    }
+    },
+    api_token: DataTypes.STRING
   }, {
     hooks:{
       beforeCreate: (user) => {
+        const salt = bcrypt.genSaltSync();
+        user.password = bcrypt.hashSync(user.password, salt);
+      },
+      beforeUpdate: (user) => {
+        console.log("in before")
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(user.password, salt);
       }
@@ -45,5 +51,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Employee',
   });
+
   return Employee;
 };

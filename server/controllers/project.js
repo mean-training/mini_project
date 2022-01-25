@@ -4,7 +4,7 @@ const Company = require('../models').Company;
 module.exports = {
 
     async create(req,res){
-        return await Project.findOrCreate({
+        return Project.findOrCreate({
             where: { project_name: req.body.name, company_id: req.employee.company_id},
             defaults: {project_name:req.body.name}
         }).then((project) => {
@@ -17,7 +17,7 @@ module.exports = {
     },
 
     async list(req,res){
-        return await Project.findAll()
+        return Project.findAll()
         .then((project) => {
              if(!project) res.status(400).send({error:true,message:"No project found"});
              res.status(200).send({error:false,message:"Projects found successfully",data:project});
@@ -27,7 +27,7 @@ module.exports = {
     },
     
     async retrieve(req,res){
-        return await Project.findOne({
+        return Project.findOne({
             where:{id:req.params.projectId},
             include:[{
                 model:Company,
@@ -47,7 +47,7 @@ module.exports = {
  
         if(requestData.name) object.project_name = requestData.name
 
-        return await Project.update(object,{
+        return  Project.update(object,{
             where: {id:req.params.projectId}
         })
         .then(() => res.status(200).send({error:false,message:"Project details updated successfully"}))
@@ -55,7 +55,7 @@ module.exports = {
     },
      
     async delete(req,res){
-        return await Project.destroy({
+        return  Project.destroy({
             where: {id:req.params.projectId}
         })
         .then(() => res.status(200).send({error:false,message:"Project deleted successfully"}))
