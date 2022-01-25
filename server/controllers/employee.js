@@ -1,8 +1,11 @@
 const Company  = require('../models').Company;
 const Employee = require('../models').Employee;
 const crypto   = require('crypto');
-const jwt = require("jsonwebtoken");
+const jwt      = require("jsonwebtoken");
 const bcrypt   = require('bcrypt');
+const async    = require('async');
+const mailer   = require('../utilities/mail'); 
+
 module.exports = {
 
     async setUp(req,res){
@@ -81,7 +84,6 @@ module.exports = {
 
     async inviteMember(req,res){
         let object      = [];
-        
         let existingOne = [];
         await Employee.findAll({
             where:{email:req.body.email}
@@ -101,12 +103,20 @@ module.exports = {
             req.body.email.map(value => {
                 let empObj = {email:value, company_id: req.employee.company_id, api_token: crypto.randomBytes(30).toString('hex')}
                 object.push(empObj);
-            })
+            });
 
-            await Employee.bulkCreate(object)
-            .then(() =>  res.status(200).send({error:false,message:"An invitation email has been sent to the members"}))
-            .catch((err) => {
-                return res.status(500).send({error:true, message: err.message});
+            return Employee.bulkCreate(object)
+            .then(() =>  {
+                async.each(object, (member) => {
+                    let activationLink = `${process.env.BASE_URL}/employee/setUp/${member.email}/${member.api_token}`
+                    let mailObj = { from: process.env.MAILER_NAME, to: member.email, subject: "Complete your account setup",
+                                    html: `<p>To activate your account, please click the link: <a href="${activationLink}">${activationLink}</a></p>`
+                                }
+                    mailer.sendEmail(mailObj);
+                });
+                res.status(200).send({error:false,message:"An invitation email has been sent to the members"})
+            }).catch((err) => {
+                res.status(500).send({error:true, message: err.message});
             });
         });
     }
