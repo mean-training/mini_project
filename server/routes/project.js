@@ -7,11 +7,13 @@ const validateProject = require('../middlewares/project');
 
 projectRouter.post('/create',authenticate.verifyToken,authenticate.isAdmin,projectController.create);
 projectRouter.get('/', authenticate.verifyToken, authenticate.isAdmin ,projectController.list);
-projectRouter.get('/:projectId', authenticate.verifyToken, authenticate.isAdmin, projectController.retrieve);
-projectRouter.put('/:projectId',authenticate.verifyToken, authenticate.isAdmin, projectController.update);
-projectRouter.delete('/:projectId', authenticate.verifyToken, authenticate.isAdmin, projectController.delete);
-projectRouter.post('/assign/:projectId',authenticate.verifyToken,authenticate.isAdmin,validateProject.getExistingEmployee ,projectController.assign);
-projectRouter.delete('/unassign/:projectId',authenticate.verifyToken,authenticate.isAdmin,validateProject.getExistingEmployee ,projectController.unassign);
-projectRouter.put('/:projectId/employee/:employeeId', authenticate.verifyToken, authenticate.isAdmin, projectController.restore);
+projectRouter.get('/company/:companyId', authenticate.verifyToken, authenticate.isAdmin , validateProject.canAccessProject , projectController.listByCompany);
+projectRouter.get('/:projectId', authenticate.verifyToken, authenticate.isAdmin,projectController.retrieve);
+projectRouter.put('/:projectId/company/:companyId',authenticate.verifyToken, authenticate.isAdmin, validateProject.canAccessProject ,projectController.update);
+projectRouter.delete('/:projectId/company/:companyId', authenticate.verifyToken, authenticate.isAdmin,validateProject.canAccessProject ,projectController.delete);
+projectRouter.put('/:projectId/company/:companyId/restore', authenticate.verifyToken, authenticate.isAdmin,validateProject.canAccessProject ,projectController.restore);
+projectRouter.post('/assign/:projectId',authenticate.verifyToken,authenticate.isAdmin,validateProject.getExistingEmployee, validateProject.canAccessProject ,projectController.assign);
+projectRouter.delete('/unassign/:projectId',authenticate.verifyToken,authenticate.isAdmin,validateProject.getExistingEmployee,validateProject.canAccessProject,projectController.unassign);
+projectRouter.put('/restore/:projectId', authenticate.verifyToken, authenticate.isAdmin, validateProject.getExistingEmployee, validateProject.canAccessProject, projectController.restoreProjectMember);
 
 module.exports = projectRouter;

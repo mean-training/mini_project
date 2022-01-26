@@ -7,6 +7,7 @@ var authRoutes   = require('./server/routes/auth');
 var companyRoutes = require('./server/routes/company');
 var projectRoutes = require('./server/routes/project');
 var employeeRouter = require('./server/routes/employee');
+var taskRouter = require('./server/routes/tasks');
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.use('/api/v1/', authRoutes);
 app.use('/api/v1/company', companyRoutes);
 app.use('/api/v1/project', projectRoutes);
 app.use('/api/v1/employee', employeeRouter);
+app.use('/api/v1/task', taskRouter);
 
 app.get('*', (req, res) => res.status(400).end('Sorry, not found'));
 

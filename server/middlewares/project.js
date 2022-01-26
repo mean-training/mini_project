@@ -6,7 +6,7 @@ const EmployeeProject = require("../models").EmployeeProject;
 const getExistingEmployee = async (req,res,next) => {
     let employee = await Project.findOne({
         where: {id:req.params.projectId},
-        attributes: ["project_name"],
+        attributes: ["project_name","company_id"],
         include: [
             {
               model: Employee,
@@ -27,6 +27,18 @@ const getExistingEmployee = async (req,res,next) => {
     }) 
 }
 
+const canAccessProject = async (req,res,next) => {
+  let adminCompany   = req.employee.company_id;
+  let projectCompany = req.projectMembers ? req.projectMembers.company_id : req.body.company_id ? req.body.company_id : req.params.companyId
+
+  if(adminCompany == projectCompany){
+    return next();
+  }
+
+  return res.status(403).send({error:true,message:"Sorry, you are unauthenticated to perform this action"})
+}
+
 module.exports = {
-    getExistingEmployee 
+    getExistingEmployee,
+    canAccessProject
 }
