@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      
     }
   }
   EmployeeProject.init({
@@ -27,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     sequelize,
     modelName: 'EmployeeProject',
+    tableName:'EmployeeProjects'
   });
   return EmployeeProject;
 };
