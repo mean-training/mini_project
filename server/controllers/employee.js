@@ -5,6 +5,7 @@ const jwt      = require("jsonwebtoken");
 const bcrypt   = require('bcrypt');
 const async    = require('async');
 const mailer   = require('../utilities/mail'); 
+const { validationResult } = require('express-validator/check');
 
 module.exports = {
 
@@ -117,6 +118,11 @@ module.exports = {
 
     async accountSetup(req,res){
         let object = {};
+        const errors = validationResult(req);
+        console.log(errors);
+        if(!errors.isEmpty()){
+            res.status(422).json({errors:errors.array()});  
+        } 
         if(req.body.first_name != null) object.first_name = req.body.first_name;
         if(req.body.last_name != null) object.last_name = req.body.last_name  
         if(req.body.password != null) object.password = req.body.password  

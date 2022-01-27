@@ -1,3 +1,4 @@
+const { default: async } = require('async');
 const Employee = require("../models").Employee;
 
 const getEmployeeDetail = async (req, res, next) => {
@@ -30,5 +31,5 @@ const getExistingEmployee = async (req,res,next) => {
 
 module.exports = {
     getEmployeeDetail,
-    getExistingEmployee 
+    getExistingEmployee
 }

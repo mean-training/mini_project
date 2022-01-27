@@ -8,6 +8,7 @@ var companyRoutes = require('./server/routes/company');
 var projectRoutes = require('./server/routes/project');
 var employeeRouter = require('./server/routes/employee');
 var taskRouter = require('./server/routes/tasks');
+const expressValidator = require('express-validator');
 
 var app = express();
 
@@ -15,6 +16,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(expressValidator());
 app.use(express.static(path.join(__dirname, 'public')));
 dotenv.config();
 

@@ -39,7 +39,7 @@ module.exports = {
       password: {
         type: Sequelize.STRING,
         validate:{
-          len:[8,10],
+          len:[6,10],
           is: /^[a-z0-9]+$/i
         }
       },

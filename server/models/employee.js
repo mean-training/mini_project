@@ -36,7 +36,6 @@ module.exports = (sequelize, DataTypes) => {
         user.password = bcrypt.hashSync(user.password, salt);
       },
       beforeUpdate: (user) => {
-        console.log("in before")
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(user.password, salt);
       }
